@@ -1,5 +1,5 @@
 ## Laravel 4.2 Framework (Kernel) Fork
-> **Note:** This repository contains a fork of the Laravel framework core code. Laravel 4.2 is no longer officially supported. If you want to build an application using Laravel, visit the main [Laravel repository](https://github.com/laravel/laravel).
+> **Note:** This is not the official version of [Laravel 4.2](https://github.com/laravel/framework/tree/4.2). This repository contains a fork of the Laravel framework core code. Laravel 4.2 is no longer officially supported. If you want to build an application using Laravel, visit the main [Laravel repository](https://github.com/laravel/laravel).
 
 ## Laravel PHP Framework
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
