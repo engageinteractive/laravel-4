@@ -3,6 +3,7 @@
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Encryption\Encrypter;
 
 class KeyGenerateCommand extends Command {
 
@@ -42,13 +43,9 @@ class KeyGenerateCommand extends Command {
 	{
 		list($path, $contents) = $this->getKeyFile();
 
-		$key = $this->getRandomKey();
+		$key = $this->generateRandomKey();
 
-		$contents = str_replace($this->laravel['config']['app.key'], $key, $contents);
-
-		$this->files->put($path, $contents);
-
-		$this->laravel['config']['app.key'] = $key;
+		$this->writeNewEnvironmentFileWith($key);
 
 		$this->info("Application key [$key] set successfully.");
 	}
@@ -68,13 +65,52 @@ class KeyGenerateCommand extends Command {
 	}
 
 	/**
-	 * Generate a random key for the application.
-	 *
-	 * @return string
-	 */
-	protected function getRandomKey()
-	{
-		return Str::random(32);
+     * Generate a random key for the application.
+     *
+     * @return string
+     */
+    protected function generateRandomKey()
+    {
+        return 'base64:'.base64_encode(
+            Encrypter::generateKey($this->laravel['config']['app.cipher'])
+        );
 	}
+
+	/**
+     * Write a new environment file with the given key.
+     *
+     * @param  string  $key
+     * @return void
+     */
+    protected function writeNewEnvironmentFileWith($key)
+    {
+        $envFile = app()->make('path.base').'/.env';
+
+		if (file_exists($envFile)) {
+			file_put_contents($envFile, preg_replace(
+				$this->keyReplacementPattern(),
+				'APP_KEY='.$key,
+				file_get_contents($envFile)
+			));
+		} else {
+			$contents = str_replace($this->laravel['config']['app.key'], $key, $contents);
+
+			$this->files->put($path, $contents);
+
+			$this->laravel['config']['app.key'] = $key;
+		}
+    }
+	
+	/**
+     * Get a regex pattern that will match env APP_KEY with any random key.
+     *
+     * @return string
+     */
+    protected function keyReplacementPattern()
+    {
+        $escaped = preg_quote('='.$this->laravel['config']['app.key'], '/');
+
+        return "/^APP_KEY{$escaped}/m";
+    }
 
 }
