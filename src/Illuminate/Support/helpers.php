@@ -510,7 +510,7 @@ if ( ! function_exists('dd'))
 	 */
 	function dd()
 	{
-		array_map(function($x) { var_dump($x); }, func_get_args()); die;
+		array_map(function($x) { dump($x); }, func_get_args()); die;
 	}
 }
 
@@ -541,6 +541,45 @@ if ( ! function_exists('ends_with'))
 	{
 		return Str::endsWith($haystack, $needles);
 	}
+}
+
+if (! function_exists('env')) {
+    /**
+     * Gets the value of an environment variable.
+     *
+     * @param  string  $key
+     * @param  mixed   $default
+     * @return mixed
+     */
+    function env($key, $default = null)
+    {
+        $value = getenv($key);
+
+        if ($value === false) {
+            return value($default);
+        }
+
+        switch (strtolower($value)) {
+            case 'true':
+            case '(true)':
+                return true;
+            case 'false':
+            case '(false)':
+                return false;
+            case 'empty':
+            case '(empty)':
+                return '';
+            case 'null':
+            case '(null)':
+                return;
+        }
+
+        if (($valueLength = strlen($value)) > 1 && $value[0] === '"' && $value[$valueLength - 1] === '"') {
+            return substr($value, 1, -1);
+        }
+
+        return $value;
+    }
 }
 
 if ( ! function_exists('head'))
