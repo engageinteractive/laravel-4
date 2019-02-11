@@ -90,9 +90,20 @@ Update the Encryption section to the below:
 
 'cipher' => 'AES-256-CBC',
 ```
-  
 
-#### 3. Generate a new application key
+#### 4. Link the fork into your project
+Add this fork to the repositories section your `composer.json` and run `composer upgrade`
+
+```
+"repositories": {
+    "laravel/framework": {
+        "type": "vcs",
+        "url": "https://github.com/engageinteractive/laravel-4-improved-encryption"
+    }
+}
+```
+  
+#### 5. Generate a new application key
 You should run the Artisan generate key command, which will input a compliant application key into your `.env` file
 
 `php artisan key:generate`
